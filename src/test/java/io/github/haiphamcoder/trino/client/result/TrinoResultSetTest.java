@@ -77,6 +77,7 @@ class TrinoResultSetTest {
         assertTrue(resultSet.next());
         assertEquals(1L, resultSet.getCurrentRow().getValue(0));
         verify(statementClient, times(1)).execute();
+        resultSet.close();
     }
 
     @Test
@@ -103,6 +104,7 @@ class TrinoResultSetTest {
         }
 
         assertEquals(3, count);
+        resultSet.close();
     }
 
     @Test
@@ -117,7 +119,7 @@ class TrinoResultSetTest {
         // Read first 2 rows from first page
         assertTrue(resultSet.next());
         assertEquals("Alice", resultSet.getCurrentRow().getValue(1));
-        
+
         assertTrue(resultSet.next());
         assertEquals("Bob", resultSet.getCurrentRow().getValue(1));
 
@@ -126,6 +128,7 @@ class TrinoResultSetTest {
         assertEquals("Charlie", resultSet.getCurrentRow().getValue(1));
 
         verify(statementClient, times(1)).advance();
+        resultSet.close();
     }
 
     @Test
@@ -141,6 +144,7 @@ class TrinoResultSetTest {
         TrinoResultSet resultSet = new TrinoResultSet(statementClient);
 
         assertFalse(resultSet.next());
+        resultSet.close();
     }
 
     @Test
@@ -149,6 +153,7 @@ class TrinoResultSetTest {
         TrinoResultSet resultSet = new TrinoResultSet(statementClient);
 
         assertThrows(TrinoException.class, () -> resultSet.getCurrentRow());
+        resultSet.close();
     }
 
     @Test
@@ -165,6 +170,7 @@ class TrinoResultSetTest {
         resultSet.next(); // Returns false
 
         assertThrows(TrinoException.class, () -> resultSet.getCurrentRow());
+        resultSet.close();
     }
 
     @Test
@@ -179,6 +185,7 @@ class TrinoResultSetTest {
         assertEquals(2, cols.size());
         assertEquals("id", cols.get(0).getName());
         verify(statementClient, times(1)).execute();
+        resultSet.close();
     }
 
     @Test
@@ -195,6 +202,7 @@ class TrinoResultSetTest {
         resultSet.getStats();
 
         verify(statementClient, times(1)).getCurrentResponse();
+        resultSet.close();
     }
 
     @Test
@@ -206,6 +214,7 @@ class TrinoResultSetTest {
         QueryState state = resultSet.getState();
 
         assertEquals(QueryState.FINISHED, state);
+        resultSet.close();
     }
 
     @Test
@@ -217,4 +226,3 @@ class TrinoResultSetTest {
         verify(statementClient, times(1)).close();
     }
 }
-
